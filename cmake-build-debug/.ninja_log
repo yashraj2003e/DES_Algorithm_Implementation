@@ -1,0 +1,11 @@
+# ninja log v5
+1	742	7215115776821783	build.ninja	addf157bde8d3691
+10	4094	7215114926828289	CMakeFiles/cryptography.dir/DES_implementation.cpp.obj	e2b85cec1bbfba3
+4094	4344	7215114929316701	cryptography.exe	dcd0afc0363754f9
+10	3608	7215106159782049	CMakeFiles/cryptography.dir/main.cpp.obj	2211635d889cf152
+8	4070	7215116897104804	CMakeFiles/cryptography.dir/DES_implementation.cpp.obj	e2b85cec1bbfba3
+4070	4302	7215116899361535	cryptography.exe	dcd0afc0363754f9
+10	5287	7215117644706291	CMakeFiles/cryptography.dir/DES_implementation.cpp.obj	e2b85cec1bbfba3
+5287	5517	7215117646963283	cryptography.exe	dcd0afc0363754f9
+8	4351	7215118176458763	CMakeFiles/cryptography.dir/DES_implementation.cpp.obj	e2b85cec1bbfba3
+4351	4579	7215118178681545	cryptography.exe	dcd0afc0363754f9

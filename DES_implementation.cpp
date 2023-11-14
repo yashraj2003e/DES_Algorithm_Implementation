@@ -368,8 +368,8 @@ void DES(int round,string& KL0,string& KR0,string& L0,string& R0,int& rounds) {
     }
 
     if(round==16 && rounds==16) {
-        string encryptedText,finalText,output = newLeftVal+R0;
-
+        string encryptedText,finalText,output = newLeftVal+prevR0;
+        cout<<output<<endl;
         for(auto & i : finalInputPermutation) {
             for(int j : i) {
                 encryptedText += output[j - 1];
@@ -454,7 +454,7 @@ int main() {
         cout<<KL0<<" "<<KL0.size()<<" "<<binaryToHex(KL0)<<endl<<KR0<<" "<<KR0.size()<<" "<<binaryToHex(KR0);
     */
 
-    for(int i=1;i<=1;i++) {
+    for(int i=1;i<=rounds;i++) {
         cout<<endl<<"Round: "<<i<<endl;
         DES(i, KL0, KR0, L0, R0,rounds);
     }

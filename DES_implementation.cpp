@@ -302,11 +302,11 @@ void DES(int round,string& KL0,string& KR0,string& L0,string& R0,int& rounds) {
     cout<<XOR_value<<endl;
 
     for(int i=0;i<48;i+=6) {
-        int first = XOR_value[i]-'0';
-        int second = XOR_value[i+5]-'0';
+        string first = string(1,XOR_value[i]);
+        string second = string(1,XOR_value[i+5]);
         int curOutput = binaryToDecimal(XOR_value.substr(i+1,4));
         int val;
-        int third = binaryToDecimal(to_string(first+second));
+        int third = binaryToDecimal((first+second));
 
         if(i==0) {
             val = S1[third][curOutput];
@@ -454,7 +454,7 @@ int main() {
         cout<<KL0<<" "<<KL0.size()<<" "<<binaryToHex(KL0)<<endl<<KR0<<" "<<KR0.size()<<" "<<binaryToHex(KR0);
     */
 
-    for(int i=1;i<=rounds;i++) {
+    for(int i=1;i<=1;i++) {
         cout<<endl<<"Round: "<<i<<endl;
         DES(i, KL0, KR0, L0, R0,rounds);
     }

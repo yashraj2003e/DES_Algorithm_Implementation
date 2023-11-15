@@ -479,6 +479,7 @@ int main() {
         cout<<KL0<<" "<<KL0.size()<<" "<<binaryToHex(KL0)<<endl<<KR0<<" "<<KR0.size()<<" "<<binaryToHex(KR0);
     */
 
+
     for(int i=1;i<=rounds;i++) {
         cout<<endl<<"Round: "<<i<<endl;
         DES(i, KL0, KR0, L0, R0,rounds);

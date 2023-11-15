@@ -1,11 +1,12 @@
-hex 16
+ascii 8
+Capacity
+AMBARISH
+
+hex 8
 123456ABCD132536
 581FBC94D3A452EA
 
 
-ascii 8
-Bulletin
-AMBARISH
 
 hex 16
 3570E2F1BA4682C7

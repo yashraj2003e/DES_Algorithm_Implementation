@@ -6,6 +6,16 @@ string key;
 string L0;
 string R0;
 
+vector<vector<string>> keyRotations;
+vector<vector<string>> permutedChoiceValues;
+vector<vector<string>> rightInputKeys;
+vector<vector<string>> expandedRightInputKeys;
+vector<vector<string>> XOROutput;
+vector<vector<string>> permutedChoice2Values;
+vector<vector<string>> sboxOutput;
+vector<vector<string>> newRvalues;
+vector<vector<string>> newLvalues;
+
 unordered_map<char,string> myMap = {
         {'0',"0000"},{'1',"0001"},{'2',"0010"},
         {'3',"0011"},{'4',"0100"},{'5',"0101"},
@@ -267,6 +277,7 @@ int binaryToDecimal(string inputText) {
 
 void DES(int round,string& KL0,string& KR0,string& L0,string& R0,int& rounds) {
     string XOR_value,newLeftVal,SBoxOutput,reducedXOR;
+    vector<string> EachRoundRotation;
 
     if(round==1 || round==2 || round==9 || round==16) {
         cout<<"Left Shifting Left and Right Bits of Key by One: (28 bits)"<<endl;
@@ -281,23 +292,30 @@ void DES(int round,string& KL0,string& KR0,string& L0,string& R0,int& rounds) {
         cout<<KL0<<endl<<KR0<<endl;
     }
 
+
+
     string K = KL0+KR0;
     cout<<"Adding both sides of Key: (56 bits)"<<endl;
     cout<<K<<endl;
 
-    string prevR0 = R0;
+    keyRotations.push_back({K});
 
+    string prevR0 = R0;
+    rightInputKeys.push_back({R0});
     K = keypermute2(K);
+    permutedChoiceValues.push_back({K});
     cout<<"Permutation 2 of key: (48 bits)"<<endl;
     cout<<K<<endl;
+    permutedChoice2Values.push_back({K});
     R0 = expand(R0);
+    expandedRightInputKeys.push_back({R0});
     cout<<"Output of Right Side of Input Text after Expansion-P box: (48 bits)"<<endl;
     cout<<R0<<endl;
 
     for(int i=0;i<48;i++) {
         XOR_value+=to_string(R0[i]-'0' ^ K[i]-'0');
     }
-
+    XOROutput.push_back({XOR_value});
     cout<<"Result of Cipher Function: "<<endl;
     cout<<XOR_value<<endl;
 
@@ -337,17 +355,19 @@ void DES(int round,string& KL0,string& KR0,string& L0,string& R0,int& rounds) {
 
     cout<<"Output of S-box for Each of 6 bits result of Cipher Function: (32 bits)"<<endl;
     cout<<reducedXOR<<endl;
+    sboxOutput.push_back({reducedXOR});
 
     for(int i=0;i<32;i++) {
         newLeftVal+=to_string(L0[i]-'0' ^ reducedXOR[i]-'0');
     }
 
+    newRvalues.push_back({newLeftVal});
+
     cout<<"XOR of Left side and output of Cipher Function: (32 bits)"<<endl;
     cout<<newLeftVal<<endl;
 
     if(round==8 && rounds==8) {
-        string encryptedText,finalText,output = newLeftVal+R0;
-
+        string encryptedText,finalText,output = newLeftVal+prevR0;
         for(auto & i : finalInputPermutation) {
             for(int j : i) {
                 encryptedText += output[j - 1];
@@ -369,7 +389,6 @@ void DES(int round,string& KL0,string& KR0,string& L0,string& R0,int& rounds) {
 
     if(round==16 && rounds==16) {
         string encryptedText,finalText,output = newLeftVal+prevR0;
-        cout<<output<<endl;
         for(auto & i : finalInputPermutation) {
             for(int j : i) {
                 encryptedText += output[j - 1];
@@ -389,12 +408,16 @@ void DES(int round,string& KL0,string& KR0,string& L0,string& R0,int& rounds) {
         return;
     }
     L0 = prevR0;
+    newLvalues.push_back({L0});
     R0 = newLeftVal;
     cout<<"New Left Side: "<<endl;
     cout<<L0<<endl;
     cout<<"New Right Side: "<<endl;
     cout<<R0<<endl;
+}
 
+int charToDecimal(char it) {
+    return (int)(it);
 }
 
 int main() {
@@ -450,6 +473,8 @@ int main() {
     cout<<"Right Side of Key (28 bits): "<<endl;
     cout<<KR0<<endl;
 
+    keyRotations.push_back({KL0+KR0});
+
     /*
         cout<<KL0<<" "<<KL0.size()<<" "<<binaryToHex(KL0)<<endl<<KR0<<" "<<KR0.size()<<" "<<binaryToHex(KR0);
     */
@@ -458,4 +483,154 @@ int main() {
         cout<<endl<<"Round: "<<i<<endl;
         DES(i, KL0, KR0, L0, R0,rounds);
     }
+
+    if(rounds!=8) return 0;
+
+    cout<<"******************************************************************************************************************************************************************************"<<endl;
+    cout<<endl<<"Message"<<endl;
+    for(auto it:plainText) {
+        cout<<it<<" "<<charToDecimal(it)<<" "<<decimalToBinaryASCII((charToDecimal(it)));
+        cout<<endl;
+    }
+    cout<<endl;
+
+    cout<<endl<<"Key"<<endl;
+    for(auto it:key) {
+        cout<<it<<" "<<charToDecimal(it)<<" "<<decimalToBinaryASCII((charToDecimal(it)));
+        cout<<endl;
+    }
+    cout<<endl;
+
+    string K = KL0 + KR0;
+
+    cout<<"Key: ";
+    for(int i=0;i<56;i+=7) {
+        cout<<K.substr(i,7)<<" ";
+    }
+    cout<<endl;
+
+    cout<<endl<<"Key Rotations:"<<endl;
+    for(int it=0;it<keyRotations.size();it++) {
+        for(int i=0;i<keyRotations[it].size();i++) {
+            cout<<"K"<<it<<": ";
+            for(int k=0;k<keyRotations[it][i].size();k+=7) {
+                cout<<keyRotations[it][i].substr(k,7)<<" ";
+            }
+        }
+        cout<<endl;
+    }
+
+    cout<<endl<<"Permuted Choice - 2"<<endl;
+    for(int it=0;it<permutedChoiceValues.size();it++) {
+        for(int i=0;i<permutedChoiceValues[it].size();i++) {
+            cout<<"K"<<it+1<<": ";
+            for(int k=0;k<permutedChoiceValues[it][i].size();k+=6) {
+                cout<<permutedChoiceValues[it][i].substr(k,6)<<" ";
+            }
+        }
+        cout<<endl;
+    }
+
+    cout<<endl<<"Message: "<<endl;
+
+    for(int i=0;i<binaryText.size();i+=8) {
+        cout<<binaryText.substr(i,8)<<" ";
+    }
+
+    cout<<endl;
+
+    cout<<"Initial Permutation: "<<endl;
+    for(int i=0;i<permutedInputText.size();i+=8) {
+        cout<<permutedInputText.substr(i,8)<<" ";
+    }
+    cout<<endl;
+
+    int size = (int)expandedRightInputKeys.size();
+    cout<<endl;
+    for(int i=0;i<size;i++) {
+
+        cout<<endl<<i+1<<endl;
+
+        cout<<"R"<<(i+1)<<":"<<endl;
+        for(int j=0;j<rightInputKeys[i].size();j++) {
+            for(int k=0;k<rightInputKeys[i][j].size();k+=8) {
+                cout<<rightInputKeys[i][j].substr(k,8)<<" ";
+            }
+            cout<<endl;
+        }
+
+        cout<<"E(R"<<(i+1)<<"):"<<endl;
+        for(int j=0;j<expandedRightInputKeys[i].size();j++) {
+            for(int k=0;k<expandedRightInputKeys[i][j].size();k+=12) {
+                cout<<expandedRightInputKeys[i][j].substr(k,12)<<" ";
+            }
+            cout<<endl;
+        }
+    }
+
+
+    cout<<endl;
+    for(int i=0;i<size;i++) {
+
+
+        cout<<"E(R"<<(i+1)<<"):    ";
+        for(int j=0;j<expandedRightInputKeys[i].size();j++) {
+            for(int k=0;k<expandedRightInputKeys[i][j].size();k+=6) {
+                cout<<expandedRightInputKeys[i][j].substr(k,6)<<" ";
+            }
+            cout<<endl;
+        }
+
+
+        for(int it=0;it<permutedChoice2Values[i].size();it++) {
+            cout<<"K"<<i+1<<":       ";
+            for(int k=0;k<permutedChoice2Values[i][it].size();k+=6) {
+                cout<<permutedChoice2Values[i][it].substr(k,6)<<" ";
+            }
+            cout<<endl;
+        }
+
+        cout<<"K"<<(i+1)<<"+"<<"E(R"<<(i+1)<<"): ";
+        for(int it=0;it<XOROutput[i].size();it++) {
+            for(int k=0;k<XOROutput[i][it].size();k+=6) {
+                cout<<XOROutput[i][it].substr(k,6)<<" ";
+            }
+            cout<<endl;
+        }
+        cout<<endl;
+    }
+
+    cout<<endl<<"S-box output: "<<endl;
+    for(int i=0;i<sboxOutput.size();i++) {
+        cout<<"Iteration "<<i+1<<": ";
+
+        for(int j=0;j<sboxOutput[i].size();j++) {
+            for(int k=0;k<sboxOutput[i][j].size();k+=4) {
+                cout<<sboxOutput[i][j].substr(k,4)<<" ";
+            }
+            cout<<endl;
+        }
+    }
+
+    cout<<endl<<"Swapping: "<<endl;
+    for(int i=0;i<5;i++) {
+        cout<<endl<<"Iteration "<<i+1<<endl;
+        cout<<"L(R"<<i+1<<"):"<<endl;
+        for(int j=0;j<newLvalues[i].size();j++) {
+            for(int k=0;k<newLvalues[i][j].size();k+=8) {
+                cout<<newLvalues[i][j].substr(k,8)<<" ";
+            }
+            cout<<endl;
+        }
+        cout<<"R(L"<<i+1<<"+f(R"<<i+1<<",K"<<i+2<<"))"<<endl;
+        for(int j=0;j<newRvalues[i].size();j++) {
+            for(int k=0;k<newRvalues[i][j].size();k+=8) {
+                cout<<newRvalues[i][j].substr(k,8)<<" ";
+            }
+            cout<<endl;
+        }
+    }
+
+
+
 }

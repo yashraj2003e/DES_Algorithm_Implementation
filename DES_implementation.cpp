@@ -129,6 +129,13 @@ vector<pair<int,int>> expansionBoxBits = {{32,5},{4,9},{8,13},
                                           {12,17},{16,21},{20,25},
                                           {24,29},{28,1}};
 
+int dBox[4][8] = {
+        {16,7,20,21,29,12,28,17},
+        {1,15,23,26,5,18,31,10},
+        {2,8,24,14,32,27,3,9},
+        {19,13,30,6,22,11,4,25}
+};
+
 
 // DES IMPLEMENTATION
 
@@ -356,6 +363,19 @@ void DES(int round,string& KL0,string& KR0,string& L0,string& R0,int& rounds) {
     cout<<"Output of S-box for Each of 6 bits result of Cipher Function: (32 bits)"<<endl;
     cout<<reducedXOR<<endl;
     sboxOutput.push_back({reducedXOR});
+
+    string straightDBox;
+
+    for(auto & i : dBox) {
+        for(int j : i) {
+            straightDBox+=reducedXOR[j-1];
+        }
+    }
+
+    cout<<"Straight D-Box Output (32 bits)"<<endl;
+    cout<<straightDBox<<endl;
+
+    reducedXOR = straightDBox;
 
     for(int i=0;i<32;i++) {
         newLeftVal+=to_string(L0[i]-'0' ^ reducedXOR[i]-'0');

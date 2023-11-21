@@ -252,11 +252,6 @@ string shiftLeftByTwo(string& inputText) {
     return inputText.substr(2,27)+string(1,inputText[0])+string(1,inputText[1]);
 }
 
-/*
- * When you're all alone, I will reach for you
- * When you're feeling low, I will be there too
-*/
-
 string expand(string& r0) {
     string result;
     int x = 0;
